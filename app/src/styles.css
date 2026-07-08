@@ -111,3 +111,45 @@
     border-color: var(--hf-color-border-default);
   }
 }
+
+/* ============================================================
+ * Rail Train Service — brand token layer (design-brief.md)
+ * Palette «Кобальт и бумага», type Golos Text / Inter Tight /
+ * JetBrains Mono. Overrides the template chrome for this site.
+ * ============================================================ */
+@import "./fonts.css";
+
+@theme {
+  --color-paper: #f5f3ed;
+  --color-ink: #101c3d;
+  --color-cobalt: #2244cc;
+  --color-steel: #c9d0e4;
+  --font-display: "Golos Text", "Inter Tight", system-ui, sans-serif;
+  --font-body: "Inter Tight", system-ui, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    background-color: #f5f3ed;
+    color: #101c3d;
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  body {
+    background-color: #f5f3ed;
+    color: #101c3d;
+    font-family: "Inter Tight", system-ui, sans-serif;
+  }
+}
+
+/* Generated icon slices sit on white sheets: multiply melts the white
+ * into any light ground. Never place these on the navy panels. */
+.rts-icon { mix-blend-mode: multiply; }
+
+/* Lenis recommended base styles */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }

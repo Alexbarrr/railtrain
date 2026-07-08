@@ -92,10 +92,15 @@ function buildHead(meta: AppMeta) {
       // Cover video (og:video) — the animated counterpart of og:image; the
       // Higgsfield feed cards also play it on hover.
       ...(ogVideo ? [{ property: "og:video", content: ogVideo }] : []),
+      { name: "theme-color", content: "#F5F3ED" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       ...(favicon ? [{ rel: "icon", href: favicon }] : []),
+      { rel: "icon", sizes: "32x32", href: "/assets/favicon-32.png" },
+      { rel: "icon", sizes: "64x64", href: "/assets/favicon-64.png" },
+      { rel: "apple-touch-icon", href: "/assets/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
     ],
   };
 }
