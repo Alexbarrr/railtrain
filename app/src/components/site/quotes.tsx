@@ -20,7 +20,7 @@ const QUOTES = [
 export function Quotes() {
   return (
     <section className="border-t border-ink/20 bg-paper px-5 py-16 text-ink md:px-10 md:py-24">
-      <h2 className="font-display text-4xl font-black uppercase leading-none tracking-tight md:text-6xl">
+      <h2 className="break-words font-display text-3xl font-black uppercase leading-none tracking-tight md:text-6xl">
         Отзывы
       </h2>
       <div className="mt-10 divide-y divide-ink/15">

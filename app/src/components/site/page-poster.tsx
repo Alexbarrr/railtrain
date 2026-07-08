@@ -22,7 +22,7 @@ export function PagePoster({
         {crumb ? <span className="text-paper/50"> / {crumb}</span> : null}
       </nav>
       <div className="mt-5 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-        <h1 className="max-w-5xl font-display text-4xl font-black uppercase leading-[1.02] tracking-tight md:text-6xl">
+        <h1 className="max-w-5xl font-display text-3xl font-black uppercase leading-[1.05] tracking-tight md:text-6xl" style={{ hyphens: "auto", overflowWrap: "break-word" }}>
           {h1}
         </h1>
         {photo ? (
@@ -32,9 +32,9 @@ export function PagePoster({
         ) : null}
       </div>
       {facts && facts.length ? (
-        <div className="mt-8 flex flex-wrap divide-x-2 divide-paper/25 border-y-2 border-paper/25">
+        <div className="mt-8 flex flex-wrap gap-3">
           {facts.map((f) => (
-            <span key={f.label} className="px-5 py-3 font-display text-lg font-bold uppercase tracking-tight first:pl-0 md:text-2xl">
+            <span key={f.label} className="border-2 border-paper/30 px-4 py-2 font-display text-base font-bold uppercase tracking-tight md:px-5 md:py-3 md:text-2xl">
               {f.label}
             </span>
           ))}

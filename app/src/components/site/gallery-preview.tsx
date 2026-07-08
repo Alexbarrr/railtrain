@@ -16,7 +16,7 @@ export function GalleryPreview() {
   return (
     <section className="border-t border-ink/20 bg-paper px-5 py-16 text-ink md:px-10 md:py-24">
       <p className="font-data text-xs uppercase tracking-[0.25em] text-field">Фотогалерея</p>
-      <h2 className="mt-3 max-w-4xl font-display text-4xl font-black uppercase leading-none tracking-tight md:text-6xl">
+      <h2 className="mt-3 max-w-4xl break-words font-display text-3xl font-black uppercase leading-none tracking-tight md:text-6xl">
         Как мы грузим
       </h2>
       <p className="mt-5 max-w-[58ch] text-base leading-relaxed text-ink/70">

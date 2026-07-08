@@ -1,25 +1,11 @@
 import { useEffect, useRef } from "react";
 
-// Tier-1 (wow-catalog D3): kinetic type opener. Строки заголовка едут по разным
-// «путям» на скролле (только transform, скриншот-безопасно), призрачная цифра
-// движется медленнее. Reduced motion: статичная композиция.
-
-// Орнамент «путь»: шпалы + рельс, чистый CSS.
-function RailTicks({ className }: { className?: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`hidden h-[0.55em] min-w-[2em] flex-1 self-center md:block ${className ?? ""}`}
-      style={{
-        backgroundImage:
-          "linear-gradient(to bottom, transparent calc(50% - 1px), currentColor calc(50% - 1px), currentColor calc(50% + 1px), transparent calc(50% + 1px)), repeating-linear-gradient(90deg, currentColor 0 8px, transparent 8px 26px)",
-      }}
-    />
-  );
-}
-
+// Tier-1: плакатный параллакс-риг (wow-catalog B1, cutout parallax).
+// Три слоя: зелёное поле с типографикой → панорама-плакат (медленный слой) →
+// вырезанный поезд, который едет на восток, пока пользователь скроллит.
+// Только transform (скриншот-безопасно). Reduced motion: статичная композиция.
 export function Hero() {
-  const rootRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -30,31 +16,44 @@ export function Hero() {
       if (cancelled || !rootRef.current) return;
       gsap.registerPlugin(ScrollTrigger);
       const root = rootRef.current;
-      const l1 = root.querySelector("[data-line1]");
-      const l2 = root.querySelector("[data-line2]");
-      const ghost = root.querySelector("[data-ghost]");
-      const stamp = root.querySelector("[data-stamp]");
+      const lines = root.querySelectorAll("[data-line]");
+      const train = root.querySelector("[data-train]");
+      const pan = root.querySelector("[data-pan]");
+      const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-      // Сборка при монтировании: строки съезжаются как составы
+      // Сборка при монтировании: заголовок поднимается, поезд въезжает слева.
       const intro = gsap.timeline();
       intro
-        .from(l1, { x: -80, duration: 1, ease: "power3.out" })
-        .from(l2, { x: 80, duration: 1, ease: "power3.out" }, "<")
-        .from(stamp, { y: -30, rotate: 8, duration: 0.9, ease: "power2.out" }, "<0.15");
+        .from(lines, { y: 64, opacity: 0, duration: 0.9, stagger: 0.12, ease: "power3.out" })
+        .from(train, { x: isMobile ? "-30vw" : "-18vw", duration: 1.6, ease: "power2.out" }, "<");
 
-      // Скролл: строки продолжают движение по своим путям
+      // Скролл: поезд едет на восток, панорама отстаёт (глубина).
       const st = gsap.timeline({
-        scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: 0.6 },
+        scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: 0.7 },
       });
-      st.to(l1, { x: -120, ease: "none" }, 0)
-        .to(l2, { x: 120, ease: "none" }, 0)
-        .to(ghost, { x: -60, ease: "none" }, 0)
-        .to(stamp, { y: 60, rotate: 5, ease: "none" }, 0);
+      st.to(train, { x: isMobile ? "16vw" : "34vw", ease: "none" }, 0)
+        .to(pan, { y: 40, ease: "none" }, 0)
+        .to(lines, { y: -30, ease: "none" }, 0);
+
+      // Лёгкий курсорный параллакс слоёв (десктоп).
+      let moveCleanup: (() => void) | undefined;
+      if (!isMobile && train && pan) {
+        const trainTo = gsap.quickTo(train, "y", { duration: 0.6, ease: "power2.out" });
+        const panTo = gsap.quickTo(pan, "rotation", { duration: 0.8, ease: "power2.out" });
+        const onMove = (e: PointerEvent) => {
+          const r = (e.clientY / window.innerHeight - 0.5) * 2;
+          trainTo(r * -6);
+          panTo(r * -0.15);
+        };
+        window.addEventListener("pointermove", onMove);
+        moveCleanup = () => window.removeEventListener("pointermove", onMove);
+      }
 
       cleanup = () => {
         intro.kill();
         st.scrollTrigger?.kill();
         st.kill();
+        moveCleanup?.();
       };
     });
 
@@ -65,52 +64,46 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={rootRef} className="relative overflow-hidden bg-field text-paper">
-      {/* призрачная цифра */}
-      <div
-        data-ghost
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap font-display text-[22vw] font-black leading-none text-paper/[0.07] md:text-[16vw]"
-      >
-        9 288 км
-      </div>
-
-      {/* фото-марка */}
-      <div
-        data-stamp
-        className="stamp absolute right-5 top-10 hidden w-52 rotate-3 lg:block xl:w-64"
-      >
-        <img
-          src="/gallery/pogruzka-v-vagony-tsmgv/IMG_1572.jpg"
-          alt="Погрузка груза в вагон на терминале"
-          className="block w-full"
-          style={{ filter: "sepia(0.25) hue-rotate(100deg) saturate(0.75)" }}
-        />
-      </div>
-
-      <div className="relative px-5 pb-20 pt-24 md:px-10 md:pb-28 md:pt-32">
-        <h1 className="font-display font-black uppercase leading-[0.95] tracking-tight">
-          <span data-line1 className="flex items-center gap-6 text-[11.5vw] md:text-[7.5vw]">
-            <RailTicks className="text-paper/60" />
-            <span className="whitespace-nowrap">Грузы едут</span>
-          </span>
-          <span data-line2 className="flex items-center gap-6 text-[11.5vw] md:text-[7.5vw]">
-            <span className="whitespace-nowrap">на восток</span>
-            <RailTicks className="text-paper/60" />
+    <section ref={rootRef} className="relative flex min-h-[88dvh] flex-col overflow-hidden bg-field text-paper">
+      <div className="relative z-10 px-5 pt-14 md:px-10 md:pt-20">
+        <h1 className="font-display font-black uppercase leading-[0.98] tracking-tight">
+          <span data-line className="block text-[11vw] md:text-[6.5vw]">Грузы едут</span>
+          <span data-line className="block text-[11vw] md:text-[6.5vw]">
+            на восток<span className="text-ochre">.</span>
           </span>
         </h1>
-        <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-paper/85 md:text-xl">
-          ЖД перевозки грузов из Москвы по всей России: контейнеры, вагоны, негабарит и автомобили.
-        </p>
+        <div data-line className="mt-6 flex flex-col items-start gap-7 md:mt-8 md:flex-row md:items-center md:gap-10">
+          <p className="max-w-[44ch] text-base leading-relaxed text-paper/85 md:text-lg">
+            ЖД перевозки грузов из Москвы по всей России: контейнеры, вагоны, негабарит и автомобили.
+          </p>
+          {/* CTA-билет: перфорация слева, «отрывается» на hover */}
+          <a
+            href="/contacts"
+            className="ticket-edge group inline-flex shrink-0 items-center gap-3 bg-ochre py-4 pl-7 pr-6 text-base font-bold text-ink transition-transform duration-200 hover:-rotate-1 hover:translate-x-1 active:scale-[0.97] md:py-5 md:pl-8 md:pr-7 md:text-lg"
+          >
+            <span className="border-l-2 border-dashed border-ink/40 pl-4 md:pl-5">Рассчитать перевозку</span>
+            <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1.5">→</span>
+          </a>
+        </div>
+      </div>
 
-        {/* CTA-билет: перфорация слева, «отрывается» на hover */}
-        <a
-          href="/contacts"
-          className="ticket-edge group mt-10 inline-flex items-center gap-4 bg-ochre py-5 pl-8 pr-7 text-lg font-bold text-ink transition-transform duration-200 hover:-rotate-1 hover:translate-x-1 active:scale-[0.97]"
-        >
-          <span className="border-l-2 border-dashed border-ink/40 pl-5">Рассчитать перевозку</span>
-          <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1.5">→</span>
-        </a>
+      {/* панорама-плакат: медленный слой */}
+      <div className="pointer-events-none relative mt-10 w-full grow md:mt-6">
+        <img
+          data-pan
+          src="/assets/panorama.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full scale-105 object-cover object-bottom"
+        />
+        {/* поезд: вырезанный слой, едет на восток */}
+        <img
+          data-train
+          src="/assets/train.png"
+          alt="Контейнерный состав идёт на восток"
+          className="absolute bottom-[6.5%] left-0 w-[130%] max-w-none md:w-[62%]"
+        />
+        <div className="min-h-[34vh] md:min-h-[42vh]" aria-hidden="true" />
       </div>
     </section>
   );

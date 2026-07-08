@@ -98,7 +98,6 @@ function ContentPage() {
 
   const facts = city
     ? [
-        { label: `Москва → ${city.city.split(",")[0]}` },
         ...(city.km ? [{ label: city.km }] : []),
         ...(city.days ? [{ label: city.days }] : []),
         ...(city.sea ? [{ label: "морское плечо" }] : []),

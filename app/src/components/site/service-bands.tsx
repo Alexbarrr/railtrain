@@ -23,7 +23,7 @@ export function ServiceBands() {
             className={`group flex flex-col gap-6 border-t border-ink/20 px-5 py-12 transition-colors md:flex-row md:items-center md:gap-10 md:px-10 md:py-14 ${f.band}`}
           >
             <div className="min-w-0 flex-1">
-              <h2 className="font-display text-3xl font-black uppercase leading-none tracking-tight md:text-5xl">
+              <h2 className="break-words font-display text-2xl font-black uppercase leading-[1.05] tracking-tight md:text-5xl">
                 {s.title}
                 <span aria-hidden="true" className="ml-4 inline-block transition-transform duration-300 group-hover:translate-x-3">→</span>
               </h2>

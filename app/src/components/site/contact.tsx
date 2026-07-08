@@ -51,7 +51,7 @@ export function Contact({ id = "contact" }: { id?: string }) {
       <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
         <div>
           <p className="font-data text-xs uppercase tracking-[0.25em] text-ochre">Контакты</p>
-          <h2 className="mt-3 font-display text-4xl font-black uppercase leading-none tracking-tight md:text-5xl">
+          <h2 className="mt-3 break-words font-display text-3xl font-black uppercase leading-none tracking-tight md:text-5xl">
             Оставить заявку
           </h2>
           <dl className="mt-10 space-y-6">
