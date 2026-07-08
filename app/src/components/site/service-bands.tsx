@@ -1,5 +1,6 @@
 
 import { SERVICES } from "../../content/site";
+import { withBase } from "../../lib/base";
 
 // Полосы-плакаты услуг (board v2): чередование полей зелёный → крем → чернила,
 // индекс охрой, документальная фото-марка справа.
@@ -19,7 +20,7 @@ export function ServiceBands() {
         return (
           <a
             key={s.href}
-            href={s.href}
+            href={withBase(s.href)}
             className={`group flex flex-col gap-6 border-t border-ink/20 px-5 py-12 transition-colors md:flex-row md:items-center md:gap-10 md:px-10 md:py-14 ${f.band}`}
           >
             <div className="min-w-0 flex-1">
@@ -33,7 +34,7 @@ export function ServiceBands() {
               {String(i + 1).padStart(2, "0")}
             </span>
             <div className="stamp w-full max-w-xs shrink-0 rotate-1 transition-transform duration-300 group-hover:rotate-0 md:w-60">
-              <img src={s.photo} alt={s.title} loading="lazy" className="block aspect-[4/3] w-full object-cover" style={{ filter: f.photoFilter }} />
+              <img src={withBase(s.photo)} alt={s.title} loading="lazy" className="block aspect-[4/3] w-full object-cover" style={{ filter: f.photoFilter }} />
             </div>
           </a>
         );

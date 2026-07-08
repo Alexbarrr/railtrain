@@ -1,5 +1,6 @@
 
 import gallery from "../../content/gallery.json";
+import { withBase } from "../../lib/base";
 
 // Мозаика реальных фото (board v2): паспарту-марки на кремовом поле.
 const PICKS: Array<{ album: string; file: string }> = [
@@ -30,11 +31,11 @@ export function GalleryPreview() {
           return (
             <a
               key={p.album + p.file}
-              href={`/gallery/${p.album}`}
+              href={withBase(`/gallery/${p.album}`)}
               className={`stamp block transition-transform duration-300 hover:rotate-0 ${i % 2 ? "rotate-1" : "-rotate-1"}`}
             >
               <img
-                src={`/gallery/${p.album}/thumb/${p.file}`}
+                src={withBase(`/gallery/${p.album}/thumb/${p.file}`)}
                 alt={album.title}
                 loading="lazy"
                 className="block aspect-[4/3] w-full object-cover"
@@ -46,7 +47,7 @@ export function GalleryPreview() {
       </div>
 
       <a
-        href="/gallery"
+        href={withBase("/gallery")}
         className="group mt-10 inline-flex items-center gap-3 font-display text-xl font-black uppercase tracking-tight text-field"
       >
         Вся галерея

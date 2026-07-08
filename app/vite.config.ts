@@ -23,6 +23,9 @@ export default defineConfig(({ mode }) => {
   const designInspectorEnabled = process.env.HF_DESIGN_INSPECTOR === "1" || mode === "design";
 
   return {
+    // GH_PAGES=1: локальная сборка статики для GitHub Pages (субпуть /railtrain/).
+    // На платформенном CI переменная не задана, base остаётся "/".
+    base: process.env.GH_PAGES === "1" ? "/railtrain/" : "/",
     resolve: {
       alias: [{ find: /^@higgsfield-ai\/icons(\/.*)?$/, replacement: QUANTA_ICONS_SHIM }],
     },

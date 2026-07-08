@@ -1,5 +1,6 @@
 
 import { PRICES } from "../../content/site";
+import { withBase } from "../../lib/base";
 
 // Тарифы на чернильном поле (board v2), mono-цифры, строка подсвечивается охрой.
 export function Pricing() {
@@ -56,7 +57,7 @@ export function Pricing() {
       <p className="mt-5 font-data text-sm text-paper/50">
         * с морским или автомобильным плечом: фрахт и портовые работы уже в цене
       </p>
-      <a href="/prices" className="mt-8 inline-block font-data text-sm text-ochre hover:text-paper">
+      <a href={withBase("/prices")} className="mt-8 inline-block font-data text-sm text-ochre hover:text-paper">
         Подробнее о ценах и сроках →
       </a>
     </section>

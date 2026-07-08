@@ -1,3 +1,4 @@
+import { withBase } from "../../lib/base";
 
 // Плакатная шапка контентной страницы (board v2): цветное поле, гигантский H1,
 // хлебная крошка охрой, документальная фото-марка справа.
@@ -18,7 +19,7 @@ export function PagePoster({
   return (
     <section className={`${band} px-5 pb-10 pt-14 text-paper md:px-10 md:pb-14 md:pt-20`}>
       <nav className="font-data text-xs text-ochre" aria-label="Хлебные крошки">
-        <a href="/" className="hover:underline">Главная</a>
+        <a href={withBase("/")} className="hover:underline">Главная</a>
         {crumb ? <span className="text-paper/50"> / {crumb}</span> : null}
       </nav>
       <div className="mt-5 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">

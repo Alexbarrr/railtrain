@@ -1,5 +1,6 @@
 
 import { ADDRESS, CITY_LINKS, EMAIL, PHONE, PHONE_HREF, SERVICE_LINKS } from "../../content/site";
+import { withBase } from "../../lib/base";
 
 // Большой SEO-футер: полная перелинковка услуг и городов, как на старом сайте.
 export function Footer() {
@@ -21,7 +22,7 @@ export function Footer() {
           <p className="font-data text-xs uppercase tracking-[0.2em] text-paper/50">Услуги</p>
           <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-1.5 sm:grid-cols-2">
             {SERVICE_LINKS.map((l) => (
-              <a key={l.href} href={l.href} className="text-sm text-paper/75 transition-colors hover:text-ochre">
+              <a key={l.href} href={withBase(l.href)} className="text-sm text-paper/75 transition-colors hover:text-ochre">
                 {l.label}
               </a>
             ))}
@@ -31,7 +32,7 @@ export function Footer() {
           <p className="font-data text-xs uppercase tracking-[0.2em] text-paper/50">Направления</p>
           <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-1.5 sm:grid-cols-2">
             {CITY_LINKS.map((l) => (
-              <a key={l.href} href={l.href} className="text-sm text-paper/75 transition-colors hover:text-ochre">
+              <a key={l.href} href={withBase(l.href)} className="text-sm text-paper/75 transition-colors hover:text-ochre">
                 {l.label}
               </a>
             ))}
@@ -41,9 +42,9 @@ export function Footer() {
       <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-paper/15 pt-6">
         <p className="font-data text-xs text-paper/50">© 2004-2026 Rail Train Service</p>
         <div className="flex gap-6 font-data text-xs">
-          <a href="/o-kompanii" className="text-paper/60 hover:text-ochre">О компании</a>
-          <a href="/dokumenty" className="text-paper/60 hover:text-ochre">Документы</a>
-          <a href="/contacts" className="text-paper/60 hover:text-ochre">Контакты</a>
+          <a href={withBase("/o-kompanii")} className="text-paper/60 hover:text-ochre">О компании</a>
+          <a href={withBase("/dokumenty")} className="text-paper/60 hover:text-ochre">Документы</a>
+          <a href={withBase("/contacts")} className="text-paper/60 hover:text-ochre">Контакты</a>
         </div>
       </div>
     </footer>

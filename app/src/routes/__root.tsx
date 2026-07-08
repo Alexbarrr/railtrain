@@ -49,9 +49,11 @@ const appMeta = appMetaJson as AppMeta;
 // domain). Genuinely external URLs (a CDN image the owner set) are left absolute.
 const APP_HOST_ZONES = ["higgsfield.app", "higgsfield-dev.app"];
 
+const BASE_PREFIX = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 function toOwnAssetUrl(value: string | null | undefined): string | null {
   if (!value) return null;
-  if (value.startsWith("/")) return value; // already root-relative
+  if (value.startsWith("/")) return BASE_PREFIX + value; // root-relative: учесть base
   try {
     const u = new URL(value);
     const isAppHost = APP_HOST_ZONES.some(
@@ -97,10 +99,10 @@ function buildHead(meta: AppMeta) {
     links: [
       { rel: "stylesheet", href: appCss },
       ...(favicon ? [{ rel: "icon", href: favicon }] : []),
-      { rel: "icon", sizes: "32x32", href: "/assets/favicon-32.png" },
-      { rel: "icon", sizes: "64x64", href: "/assets/favicon-64.png" },
-      { rel: "apple-touch-icon", href: "/assets/apple-touch-icon.png" },
-      { rel: "manifest", href: "/site.webmanifest" },
+      { rel: "icon", sizes: "32x32", href: `${BASE_PREFIX}/assets/favicon-32.png` },
+      { rel: "icon", sizes: "64x64", href: `${BASE_PREFIX}/assets/favicon-64.png` },
+      { rel: "apple-touch-icon", href: `${BASE_PREFIX}/assets/apple-touch-icon.png` },
+      { rel: "manifest", href: `${BASE_PREFIX}/site.webmanifest` },
     ],
   };
 }

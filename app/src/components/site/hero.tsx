@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { withBase } from "../../lib/base";
 
 // Tier-1: плакатный параллакс-риг (wow-catalog B1, cutout parallax).
 // Три слоя: зелёное поле с типографикой → панорама-плакат (медленный слой) →
@@ -78,7 +79,7 @@ export function Hero() {
           </p>
           {/* CTA-билет: перфорация слева, «отрывается» на hover */}
           <a
-            href="/contacts"
+            href={withBase("/contacts")}
             className="ticket-edge group inline-flex shrink-0 items-center gap-3 bg-ochre py-4 pl-7 pr-6 text-base font-bold text-ink transition-transform duration-200 hover:-rotate-1 hover:translate-x-1 active:scale-[0.97] md:py-5 md:pl-8 md:pr-7 md:text-lg"
           >
             <span className="border-l-2 border-dashed border-ink/40 pl-4 md:pl-5">Рассчитать перевозку</span>
@@ -91,7 +92,7 @@ export function Hero() {
       <div className="pointer-events-none relative mt-10 w-full grow md:mt-6">
         <img
           data-pan
-          src="/assets/panorama.jpg"
+          src={withBase("/assets/panorama.jpg")}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full scale-105 object-cover object-bottom"
@@ -99,7 +100,7 @@ export function Hero() {
         {/* поезд: вырезанный слой, едет на восток */}
         <img
           data-train
-          src="/assets/train.png"
+          src={withBase("/assets/train.png")}
           alt="Контейнерный состав идёт на восток"
           className="absolute bottom-[6.5%] left-0 w-[130%] max-w-none md:w-[62%]"
         />

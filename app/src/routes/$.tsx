@@ -9,6 +9,7 @@ import { PagePoster } from "../components/site/page-poster";
 import galleryJson from "../content/gallery.json";
 import pagesJson from "../content/pages.json";
 import { CITY_PAGES, PRICES, SERVICE_LINKS } from "../content/site";
+import { withBase } from "../lib/base";
 
 type PageData = { title: string; desc: string; h1: string; blocks: Block[]; images: string[] };
 const PAGES = pagesJson as unknown as Record<string, PageData>;
@@ -49,11 +50,11 @@ function GalleryIndex() {
       {Object.entries(GALLERY).map(([slug, album], i) => (
         <a
           key={slug}
-          href={`/gallery/${slug}`}
+          href={withBase(`/gallery/${slug}`)}
           className={`stamp block transition-transform duration-300 hover:rotate-0 ${i % 2 ? "rotate-1" : "-rotate-1"}`}
         >
           <img
-            src={`/gallery/${slug}/thumb/${album.images[0]}`}
+            src={withBase(`/gallery/${slug}/thumb/${album.images[0]}`)}
             alt={album.title}
             loading="lazy"
             className="block aspect-[4/3] w-full object-cover"
@@ -73,13 +74,13 @@ function AlbumGrid({ slug, album }: { slug: string; album: { title: string; imag
       {album.images.map((img, i) => (
         <a
           key={img}
-          href={`/gallery/${slug}/${img}`}
+          href={withBase(`/gallery/${slug}/${img}`)}
           target="_blank"
           rel="noreferrer"
           className={`stamp block transition-transform duration-300 hover:rotate-0 ${i % 3 === 1 ? "rotate-1" : i % 3 === 2 ? "-rotate-1" : ""}`}
         >
           <img
-            src={`/gallery/${slug}/thumb/${img}`}
+            src={withBase(`/gallery/${slug}/thumb/${img}`)}
             alt={`${album.title}, фото ${i + 1}`}
             loading="lazy"
             className="block aspect-[4/3] w-full object-cover"
@@ -115,7 +116,7 @@ function ContentPage() {
         <PagePoster
           h1={city ? `Москва → ${city.city}` : page.h1 || page.title}
           crumb={page.h1 || page.title}
-          photo={!city && page.images.length ? page.images[0] : undefined}
+          photo={!city && page.images.length ? withBase(page.images[0]) : undefined}
           field={city ? "ink" : "green"}
           facts={facts}
         />
@@ -139,7 +140,7 @@ function ContentPage() {
                   <div className="mt-12 grid grid-cols-2 gap-5 md:grid-cols-3">
                     {page.images.slice(1, 7).map((img) => (
                       <div key={img} className="stamp">
-                        <img src={img} alt={page.h1 || page.title} loading="lazy" className="block aspect-[4/3] w-full object-cover" />
+                        <img src={withBase(img)} alt={page.h1 || page.title} loading="lazy" className="block aspect-[4/3] w-full object-cover" />
                       </div>
                     ))}
                   </div>
@@ -150,7 +151,7 @@ function ContentPage() {
                   <p className="font-data text-xs uppercase tracking-[0.2em] text-ink/50">Другие услуги</p>
                   <nav className="mt-4 divide-y divide-ink/15 border-y border-ink/15">
                     {related.map((l) => (
-                      <a key={l.href} href={l.href} className="group flex items-center justify-between py-3 text-sm font-medium hover:text-field">
+                      <a key={l.href} href={withBase(l.href)} className="group flex items-center justify-between py-3 text-sm font-medium hover:text-field">
                         {l.label}
                         <span aria-hidden="true" className="text-ochre transition-transform duration-200 group-hover:translate-x-1">→</span>
                       </a>
