@@ -113,26 +113,26 @@
 }
 
 /* ============================================================
- * Rail Train Service — brand token layer (design-brief.md)
- * Palette «Кобальт и бумага», type Golos Text / Inter Tight /
- * JetBrains Mono. Overrides the template chrome for this site.
+ * Rail Train Service v2 — «Бутылочный плакат» (design-brief.md v2)
+ * Палитра выбрана пользователем: bottle green / cream / ink / ochre.
+ * Type: Unbounded (display) / Manrope (body) / JetBrains Mono (data).
  * ============================================================ */
 @import "./fonts.css";
 
 @theme {
-  --color-paper: #f5f3ed;
-  --color-ink: #101c3d;
-  --color-cobalt: #2244cc;
-  --color-steel: #c9d0e4;
-  --font-display: "Golos Text", "Inter Tight", system-ui, sans-serif;
-  --font-body: "Inter Tight", system-ui, sans-serif;
+  --color-field: #0b4d3a;
+  --color-paper: #f2ede3;
+  --color-ink: #131f1a;
+  --color-ochre: #f2b02d;
+  --font-display: "Unbounded", "Manrope", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
   --font-data: "JetBrains Mono", ui-monospace, monospace;
 }
 
 @layer base {
   html {
-    background-color: #f5f3ed;
-    color: #101c3d;
+    background-color: #0b4d3a;
+    color: #f2ede3;
     color-scheme: light;
     scroll-behavior: smooth;
   }
@@ -140,16 +140,30 @@
     html { scroll-behavior: auto; }
   }
   body {
-    background-color: #f5f3ed;
-    color: #101c3d;
-    font-family: "Inter Tight", system-ui, sans-serif;
+    background-color: #f2ede3;
+    color: #131f1a;
+    font-family: "Manrope", system-ui, sans-serif;
   }
+  ::selection { background: #f2b02d; color: #131f1a; }
 }
 
-/* Generated icon slices sit on white sheets: multiply melts the white
- * into any light ground. Never place these on the navy panels. */
-.rts-icon { mix-blend-mode: multiply; }
+/* Перфорация жд-билета: круглые вырезы по левому краю CTA */
+.ticket-edge {
+  -webkit-mask-image: radial-gradient(circle 5px at 0 50%, transparent 98%, black 100%);
+  mask-image: radial-gradient(circle 5px at 0 50%, transparent 98%, black 100%);
+  -webkit-mask-size: 100% 18px;
+  mask-size: 100% 18px;
+  -webkit-mask-repeat: repeat-y;
+  mask-repeat: repeat-y;
+}
 
-/* Lenis recommended base styles */
+/* Марка: фото-вставка на кремовом паспарту, чуть повёрнута как наклейка */
+.stamp {
+  padding: 10px 10px 14px;
+  background-color: #f2ede3;
+  box-shadow: 0 10px 30px rgba(19, 31, 26, 0.35);
+}
+
+/* Lenis */
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }

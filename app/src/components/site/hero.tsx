@@ -1,144 +1,62 @@
 import { useEffect, useRef } from "react";
 
-const FRAME_COUNT = 101;
-const frameSrc = (i: number) => `/frames/hero/f-${String(i + 1).padStart(3, "0")}.jpg`;
+// Tier-1 (wow-catalog D3): kinetic type opener. Строки заголовка едут по разным
+// «путям» на скролле (только transform, скриншот-безопасно), призрачная цифра
+// движется медленнее. Reduced motion: статичная композиция.
 
-// Tier-1 механика (wow-catalog A1): скролл проигрывает сгенерированный фильм.
-// Кадр 1 рисуется сразу (screenshot-safe), остальные догружаются потоком;
-// пока кадр не готов, рисуем ближайший загруженный. Reduced motion: статичный
-// финальный кадр, без пина. Мобайл: укороченный пин.
-function drawCover(canvas: HTMLCanvasElement, img: HTMLImageElement) {
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-  const { width: cw, height: ch } = canvas;
-  const s = Math.max(cw / img.width, ch / img.height);
-  const w = img.width * s;
-  const h = img.height * s;
-  ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+// Орнамент «путь»: шпалы + рельс, чистый CSS.
+function RailTicks({ className }: { className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`hidden h-[0.55em] min-w-[2em] flex-1 self-center md:block ${className ?? ""}`}
+      style={{
+        backgroundImage:
+          "linear-gradient(to bottom, transparent calc(50% - 1px), currentColor calc(50% - 1px), currentColor calc(50% + 1px), transparent calc(50% + 1px)), repeating-linear-gradient(90deg, currentColor 0 8px, transparent 8px 26px)",
+      }}
+    />
+  );
 }
 
 export function Hero() {
-  const pinRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLAnchorElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const pin = pinRef.current;
-    if (!canvas || !pin) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const sizeCanvas = () => {
-      canvas.width = Math.round(canvas.clientWidth * dpr);
-      canvas.height = Math.round(canvas.clientHeight * dpr);
-    };
-    sizeCanvas();
-
-    const frames: (HTMLImageElement | null)[] = Array(FRAME_COUNT).fill(null);
-    let current = 0;
-
-    const paint = (idx: number) => {
-      let img = frames[idx];
-      if (!img) {
-        for (let d = 1; d < FRAME_COUNT && !img; d++) {
-          img = frames[idx - d] ?? frames[idx + d] ?? null;
-        }
-      }
-      if (img) drawCover(canvas, img);
-    };
-
-    const load = (idx: number, onload?: () => void) => {
-      const img = new Image();
-      img.src = frameSrc(idx);
-      img.onload = () => {
-        frames[idx] = img;
-        onload?.();
-      };
-    };
-
-    if (reduced) {
-      // Статичный финальный кадр, никакого пина.
-      load(FRAME_COUNT - 1, () => paint(FRAME_COUNT - 1));
-      return;
-    }
-
-    load(0, () => paint(0));
-    for (let i = 1; i < FRAME_COUNT; i++) load(i, () => { if (i === current) paint(i); });
-
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let cancelled = false;
     let cleanup: (() => void) | undefined;
 
-    void Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
-      ([{ gsap }, { ScrollTrigger }]) => {
-        if (cancelled) return;
-        gsap.registerPlugin(ScrollTrigger);
+    void Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
+      if (cancelled || !rootRef.current) return;
+      gsap.registerPlugin(ScrollTrigger);
+      const root = rootRef.current;
+      const l1 = root.querySelector("[data-line1]");
+      const l2 = root.querySelector("[data-line2]");
+      const ghost = root.querySelector("[data-ghost]");
+      const stamp = root.querySelector("[data-stamp]");
 
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
-        const st = ScrollTrigger.create({
-          trigger: pin,
-          start: "top top",
-          end: isMobile ? "+=150%" : "+=250%",
-          pin: true,
-          // Следующая секция наезжает на закреплённый слой: без пустой полосы
-          // от pin-spacer в полностраничном скриншоте.
-          pinSpacing: false,
-          scrub: 0.6,
-          onUpdate: (self) => {
-            const idx = Math.min(
-              FRAME_COUNT - 1,
-              Math.round(self.progress * (FRAME_COUNT - 1)),
-            );
-            if (idx !== current) {
-              current = idx;
-              paint(idx);
-            }
-          },
-        });
+      // Сборка при монтировании: строки съезжаются как составы
+      const intro = gsap.timeline();
+      intro
+        .from(l1, { x: -80, duration: 1, ease: "power3.out" })
+        .from(l2, { x: 80, duration: 1, ease: "power3.out" }, "<")
+        .from(stamp, { y: -30, rotate: 8, duration: 0.9, ease: "power2.out" }, "<0.15");
 
-        // Сборка заголовка при монтировании (не по вьюпорту).
-        if (textRef.current) {
-          gsap.from(textRef.current.children, {
-            y: 48,
-            opacity: 0,
-            duration: 0.9,
-            stagger: 0.12,
-            ease: "power3.out",
-          });
-        }
+      // Скролл: строки продолжают движение по своим путям
+      const st = gsap.timeline({
+        scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: 0.6 },
+      });
+      st.to(l1, { x: -120, ease: "none" }, 0)
+        .to(l2, { x: 120, ease: "none" }, 0)
+        .to(ghost, { x: -60, ease: "none" }, 0)
+        .to(stamp, { y: 60, rotate: 5, ease: "none" }, 0);
 
-        // Магнитная стрелка CTA: едет по «маршрутной» пунктирной линии внутри кнопки.
-        let ctaCleanup: (() => void) | undefined;
-        const cta = ctaRef.current;
-        if (cta) {
-          const arrow = cta.querySelector<HTMLElement>("[data-arrow]");
-          if (arrow) {
-            const xTo = gsap.quickTo(arrow, "x", { duration: 0.4, ease: "power3.out" });
-            const over = () => xTo(10);
-            const out = () => xTo(0);
-            cta.addEventListener("pointerenter", over);
-            cta.addEventListener("pointerleave", out);
-            ctaCleanup = () => {
-              cta.removeEventListener("pointerenter", over);
-              cta.removeEventListener("pointerleave", out);
-            };
-          }
-        }
-
-        const onResize = () => {
-          sizeCanvas();
-          paint(current);
-        };
-        window.addEventListener("resize", onResize);
-
-        cleanup = () => {
-          window.removeEventListener("resize", onResize);
-          ctaCleanup?.();
-          st.kill();
-        };
-      },
-    );
+      cleanup = () => {
+        intro.kill();
+        st.scrollTrigger?.kill();
+        st.kill();
+      };
+    });
 
     return () => {
       cancelled = true;
@@ -147,62 +65,52 @@ export function Hero() {
   }, []);
 
   return (
-    <section id="hero" aria-label="Главный экран">
+    <section ref={rootRef} className="relative overflow-hidden bg-field text-paper">
+      {/* призрачная цифра */}
       <div
-        ref={pinRef}
-        className="relative h-dvh min-h-[560px] overflow-hidden bg-cover bg-center"
-        style={{ backgroundImage: "url(/assets/hero.jpg)" }}
+        data-ghost
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap font-display text-[22vw] font-black leading-none text-paper/[0.07] md:text-[16vw]"
       >
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 h-full w-full"
-          aria-hidden="true"
+        9 288 км
+      </div>
+
+      {/* фото-марка */}
+      <div
+        data-stamp
+        className="stamp absolute right-5 top-10 hidden w-52 rotate-3 lg:block xl:w-64"
+      >
+        <img
+          src="/gallery/pogruzka-v-vagony-tsmgv/IMG_1572.jpg"
+          alt="Погрузка груза в вагон на терминале"
+          className="block w-full"
+          style={{ filter: "sepia(0.25) hue-rotate(100deg) saturate(0.75)" }}
         />
-        {/* Затемнение под текстом, чтобы крем читался на любом кадре */}
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink/70 via-ink/20 to-transparent" />
+      </div>
 
-        {/* Маршрутная линия с вехами: мотив путевого листа */}
-        <div className="absolute inset-x-0 top-20 px-6 md:px-12" aria-hidden="true">
-          <div className="relative border-t border-steel/60">
-            {[0, 20, 40, 60, 80, 100].map((p) => (
-              <span
-                key={p}
-                className="absolute -top-[3px] h-[6px] w-px bg-steel/70"
-                style={{ left: `${p}%` }}
-              />
-            ))}
-            <span className="absolute -top-[4px] left-0 h-2 w-2 rounded-full bg-cobalt" />
-          </div>
-        </div>
+      <div className="relative px-5 pb-20 pt-24 md:px-10 md:pb-28 md:pt-32">
+        <h1 className="font-display font-black uppercase leading-[0.95] tracking-tight">
+          <span data-line1 className="flex items-center gap-6 text-[11.5vw] md:text-[7.5vw]">
+            <RailTicks className="text-paper/60" />
+            <span className="whitespace-nowrap">Грузы едут</span>
+          </span>
+          <span data-line2 className="flex items-center gap-6 text-[11.5vw] md:text-[7.5vw]">
+            <span className="whitespace-nowrap">на восток</span>
+            <RailTicks className="text-paper/60" />
+          </span>
+        </h1>
+        <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-paper/85 md:text-xl">
+          ЖД перевозки грузов из Москвы по всей России: контейнеры, вагоны, негабарит и автомобили.
+        </p>
 
-        <div
-          ref={textRef}
-          className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-6 px-6 pb-14 md:px-12 md:pb-20"
+        {/* CTA-билет: перфорация слева, «отрывается» на hover */}
+        <a
+          href="/contacts"
+          className="ticket-edge group mt-10 inline-flex items-center gap-4 bg-ochre py-5 pl-8 pr-7 text-lg font-bold text-ink transition-transform duration-200 hover:-rotate-1 hover:translate-x-1 active:scale-[0.97]"
         >
-          <h1 className="max-w-4xl font-display text-4xl font-black leading-none tracking-tighter text-paper md:text-6xl">
-            ЖД перевозки грузов
-            <br />
-            из Москвы по всей России
-          </h1>
-          <p className="max-w-[46ch] text-base leading-relaxed text-paper/85">
-            Контейнеры, вагоны, негабарит и автомобили: принимаем груз на складе
-            и сдаём получателю на станции назначения.
-          </p>
-          <div className="flex flex-wrap items-center">
-            <a
-              ref={ctaRef}
-              href="#contact"
-              className="group relative inline-flex items-center gap-4 bg-cobalt px-7 py-4 text-base font-semibold text-paper transition-transform active:scale-[0.98]"
-            >
-              Рассчитать перевозку
-              {/* стрелка едет по пунктирному «маршруту» внутри кнопки */}
-              <span className="relative inline-flex w-10 items-center" aria-hidden="true">
-                <span className="absolute inset-x-0 border-t border-dashed border-paper/50" />
-                <span data-arrow className="relative translate-x-0 transition-transform">→</span>
-              </span>
-            </a>
-          </div>
-        </div>
+          <span className="border-l-2 border-dashed border-ink/40 pl-5">Рассчитать перевозку</span>
+          <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1.5">→</span>
+        </a>
       </div>
     </section>
   );

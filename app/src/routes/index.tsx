@@ -3,51 +3,52 @@ import { useEffect, useRef } from "react";
 
 import { Contact } from "../components/site/contact";
 import { Footer } from "../components/site/footer";
-import { Geography } from "../components/site/geography";
+import { GalleryPreview } from "../components/site/gallery-preview";
 import { Hero } from "../components/site/hero";
-import { Included } from "../components/site/included";
+import { Metrics } from "../components/site/metrics";
 import { Nav } from "../components/site/nav";
 import { Pricing } from "../components/site/pricing";
-import { Services } from "../components/site/services";
+import { ServiceBands } from "../components/site/service-bands";
 import { SmoothScroll } from "../components/site/smooth-scroll";
-import { Testimonials } from "../components/site/testimonials";
+import { Quotes } from "../components/site/quotes";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Перевозка грузов из Москвы по России ЖД транспортом. Выгодные цены. Широкая география перевозок - Рейл Трейн Сервис | Rail Train Service" },
+      { name: "description", content: "Перевозка грузов по России ЖД транспортом - Рейл Трейн Сервис" },
+    ],
+  }),
   component: Index,
 });
 
 function Index() {
   const mainRef = useRef<HTMLDivElement>(null);
 
-  // Скролл-ревилы заголовков секций: только transform (screenshot-safe,
-  // никакого opacity-0 в ожидании вьюпорта), с reduced-motion фолбэком.
+  // Ревилы заголовков секций: только transform (скриншот-безопасно).
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
     let cancelled = false;
     let cleanup: (() => void) | undefined;
 
-    void Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
-      ([{ gsap }, { ScrollTrigger }]) => {
-        if (cancelled || !mainRef.current) return;
-        gsap.registerPlugin(ScrollTrigger);
-
-        const headings = mainRef.current.querySelectorAll("section h2");
-        const tweens = Array.from(headings).map((h) =>
-          gsap.from(h, {
-            y: 56,
-            duration: 0.8,
-            ease: "power3.out",
-            scrollTrigger: { trigger: h, start: "top 88%" },
-          }),
-        );
-        cleanup = () =>
-          tweens.forEach((t) => {
-            t.scrollTrigger?.kill();
-            t.kill();
-          });
-      },
-    );
+    void Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
+      if (cancelled || !mainRef.current) return;
+      gsap.registerPlugin(ScrollTrigger);
+      const headings = mainRef.current.querySelectorAll("section h2");
+      const tweens = Array.from(headings).map((h) =>
+        gsap.from(h, {
+          y: 48,
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: { trigger: h, start: "top 90%" },
+        }),
+      );
+      cleanup = () =>
+        tweens.forEach((t) => {
+          t.scrollTrigger?.kill();
+          t.kill();
+        });
+    });
 
     return () => {
       cancelled = true;
@@ -61,15 +62,12 @@ function Index() {
       <Nav />
       <main>
         <Hero />
-        {/* relative + фон: секции наезжают на запиненный hero (pinSpacing: false) */}
-        <div className="relative z-10">
-          <Services />
-          <Geography />
-          <Pricing />
-          <Included />
-          <Testimonials />
-          <Contact />
-        </div>
+        <ServiceBands />
+        <Metrics />
+        <Pricing />
+        <GalleryPreview />
+        <Quotes />
+        <Contact />
       </main>
       <Footer />
     </div>

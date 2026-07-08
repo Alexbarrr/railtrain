@@ -1,0 +1,118 @@
+{
+ "pogruzka-avto-v-kontejnerakh": {
+  "title": "Погрузка авто в контейнерах",
+  "images": [
+   "IMG-20211130-WA0000.jpg",
+   "IMG-20211130-WA0002.jpg",
+   "IMG-20211130-WA0009.jpg",
+   "IMG-20211130-WA0010.jpg",
+   "IMG-20211130-WA0011.jpg",
+   "IMG-20211130-WA0012.jpg",
+   "IMG-20211130-WA0013.jpg",
+   "IMG-20211130-WA0014.jpg",
+   "IMG-20211130-WA0015.jpg",
+   "IMG-20211130-WA0018.jpg",
+   "IMG-20211130-WA0019.jpg",
+   "IMG-20211130-WA0020.jpg",
+   "IMG-20211130-WA0022.jpg",
+   "IMG-20211130-WA0024.jpg",
+   "IMG-20211130-WA0025.jpg",
+   "IMG-20211130-WA0028.jpg",
+   "IMG-20211130-WA0029.jpg"
+  ]
+ },
+ "pogruzka-na-avtomobili": {
+  "title": "Погрузка на автомобили",
+  "images": [
+   "IMG_0220.JPG",
+   "IMG_0924.JPG",
+   "IMG_0925.JPG",
+   "IMG_1588.JPG",
+   "IMG_5496.JPG",
+   "avto_v_furu.JPG",
+   "evakuator.JPG",
+   "fura.JPG"
+  ]
+ },
+ "pogruzka-oborudovaniya": {
+  "title": "Погрузка оборудования",
+  "images": [
+   "DSCF1036.JPG",
+   "DSCF1097.JPG",
+   "DSCF1111.JPG",
+   "DSCF3400.JPG",
+   "DSCF6909.JPG",
+   "DSCF6996.JPG",
+   "DSCF7896.JPG",
+   "IMG_0777.JPG",
+   "IMG_0782.JPG",
+   "IMG_1429.JPG",
+   "IMG_1437.JPG",
+   "IMG_1458.JPG",
+   "IMG_5833.JPG",
+   "topaz.JPG",
+   "trnsformator.JPG"
+  ]
+ },
+ "pogruzka-spetsavtomobilej": {
+  "title": "Погрузка спецавтомобилей",
+  "images": [
+   "IMG_1386.JPG",
+   "IMG_1921.JPG",
+   "IMG_1956.JPG",
+   "avtobus.JPG"
+  ]
+ },
+ "pogruzka-spetstekhniki": {
+  "title": "Погрузка спецтехники",
+  "images": [
+   "IMG_0010.JPG",
+   "IMG_0174.JPG",
+   "IMG_0193.JPG",
+   "IMG_1388.JPG",
+   "IMG_1395.JPG",
+   "IMG_1400.JPG",
+   "IMG_1402.JPG",
+   "IMG_1424.JPG",
+   "IMG_1471.JPG",
+   "IMG_1474.JPG",
+   "IMG_4967.JPG",
+   "IMG_5115.JPG",
+   "IMG_5500.JPG"
+  ]
+ },
+ "pogruzka-stroj-tekhniki": {
+  "title": "Погрузка строй техники",
+  "images": [
+   "DSCF7888.JPG",
+   "DSCF7889.JPG",
+   "DSCF7890.JPG",
+   "DSCF7891.JPG",
+   "DSCF8333.JPG",
+   "IMG_1310.JPG",
+   "IMG_1472.JPG",
+   "IMG_1475.JPG",
+   "IMG_4805.JPG",
+   "IMG_4806.JPG",
+   "IMG_4808.JPG",
+   "greider.JPG"
+  ]
+ },
+ "pogruzka-v-vagony-tsmgv": {
+  "title": "Погрузка в вагоны ЦМГВ",
+  "images": [
+   "DSCF8331.JPG",
+   "IMG_0070.JPG",
+   "IMG_1424.JPG",
+   "IMG_1426.JPG",
+   "IMG_1572.JPG",
+   "IMG_1577.JPG",
+   "IMG_1684.JPG",
+   "IMG_1685.JPG",
+   "IMG_1878.JPG",
+   "IMG_5112.JPG",
+   "IMG_5117.JPG",
+   "P1110950.JPG"
+  ]
+ }
+}
